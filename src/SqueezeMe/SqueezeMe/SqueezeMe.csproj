@@ -46,10 +46,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompressedContent.cs" />
-    <Compile Include="CompressionHandler.cs" />
-    <Compile Include="DeflateCompressor.cs" />
-    <Compile Include="GZipCompressor.cs" />
+    <Compile Include="CompressedContent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CompressionHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DeflateCompressor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GZipCompressor.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ICompressor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
