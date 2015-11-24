@@ -20,7 +20,7 @@ namespace SqueezeMe.UnitTests
         {
             var request = new HttpRequestMessage();
             request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue(encoding));
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(@"application/json"));
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             request.Content = new ObjectContent<string>("Request", new JsonMediaTypeFormatter());
 
             var response = new HttpResponseMessage(HttpStatusCode.OK);
@@ -34,13 +34,14 @@ namespace SqueezeMe.UnitTests
 
             Assert.That(result.Content.Headers.ContentEncoding, Contains.Item(encoding));
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(result.Content.Headers.ContentType.MediaType, Is.EqualTo("application/json"));
         }
 
         [Test]
         public async void Given_A_Json_Payload_When_Requesting_NoContentEncoding()
         {
             var request = new HttpRequestMessage();
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(@"application/json"));
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             request.Content = new ObjectContent<string>("Request", new JsonMediaTypeFormatter());
 
             var response = new HttpResponseMessage(HttpStatusCode.OK);
@@ -54,6 +55,7 @@ namespace SqueezeMe.UnitTests
 
             Assert.That(result.Content.Headers.ContentEncoding, Is.Empty);
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(result.Content.Headers.ContentType.MediaType, Is.EqualTo("application/json"));
         }
 
         [Theory]
@@ -61,7 +63,7 @@ namespace SqueezeMe.UnitTests
         {
             var request = new HttpRequestMessage();
             request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue(encoding));
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(@"application/json"));
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             var response = new HttpResponseMessage(HttpStatusCode.OK);
 
