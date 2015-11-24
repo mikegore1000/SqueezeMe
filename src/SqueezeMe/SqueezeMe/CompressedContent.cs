@@ -14,13 +14,15 @@ namespace SqueezeMe
         {
             this.content = content;
             this.compressor = compressor;
-            CopyHeaders();
-            AddCompressionHeaders();
+            AddHeaders();
         }
 
         protected override async Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            await compressor.CompressAsync(content, stream).ConfigureAwait(false);
+            using (var compressionStream = compressor.CreateStream(stream))
+            {
+                await content.CopyToAsync(compressionStream).ConfigureAwait(false);
+            }
         }
 
         protected override bool TryComputeLength(out long length)
@@ -29,16 +31,13 @@ namespace SqueezeMe
             return false;
         }
 
-        private void CopyHeaders()
+        private void AddHeaders()
         {
             foreach (var header in content.Headers)
             {
                 Headers.Add(header.Key, header.Value);
             }
-        }
 
-        private void AddCompressionHeaders()
-        {
             Headers.ContentEncoding.Add(compressor.ContentEncoding);
         }
 

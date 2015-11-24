@@ -9,5 +9,7 @@ namespace SqueezeMe
         string ContentEncoding { get; }
 
         Task CompressAsync(HttpContent source, Stream destination);
+
+        Stream CreateStream(Stream destination);
     }
 }

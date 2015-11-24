@@ -19,5 +19,10 @@ namespace SqueezeMe
                 await source.CopyToAsync(gzipStream).ConfigureAwait(false);
             }
         }
+
+        public Stream CreateStream(Stream destination)
+        {
+            return new GZipStream(destination, CompressionLevel.Fastest, leaveOpen: false);
+        }
     }
 }

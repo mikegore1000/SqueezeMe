@@ -19,5 +19,10 @@ namespace SqueezeMe
                 await source.CopyToAsync(deflateStream).ConfigureAwait(false);
             }
         }
+
+        public Stream CreateStream(Stream destination)
+        {
+            return new DeflateStream(destination, CompressionLevel.Fastest, leaveOpen: false);
+        }
     }
 }
