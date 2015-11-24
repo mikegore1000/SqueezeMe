@@ -20,7 +20,7 @@ namespace SqueezeMe
 
         protected override async Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            await compressor.CompressAsync(this.content, stream).ConfigureAwait(false);
+            await compressor.CompressAsync(content, stream).ConfigureAwait(false);
         }
 
         protected override bool TryComputeLength(out long length)

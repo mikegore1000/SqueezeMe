@@ -17,7 +17,7 @@ namespace SqueezeMe
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var response = await base.SendAsync(request, cancellationToken);
+            var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
             var baseContent = response.Content;
             var compressor = GetCompressor(request);
 
