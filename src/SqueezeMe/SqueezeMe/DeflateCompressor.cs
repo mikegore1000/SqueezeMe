@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SqueezeMe
 {
-    internal class DeflateCompressor : ICompressor
+    public class DeflateCompressor : ICompressor
     {
         public string ContentEncoding
         {

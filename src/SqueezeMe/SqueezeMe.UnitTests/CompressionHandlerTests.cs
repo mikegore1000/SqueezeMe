@@ -33,7 +33,9 @@ namespace SqueezeMe.UnitTests
 
             Assert.That(result.Content.Headers.ContentEncoding, Contains.Item(encoding));
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(result.Content, Is.TypeOf<CompressedContent>());
             Assert.That(result.Content.Headers.ContentType.MediaType, Is.EqualTo("application/json"));
+            
         }
 
         [Test]
@@ -54,6 +56,7 @@ namespace SqueezeMe.UnitTests
 
             Assert.That(result.Content.Headers.ContentEncoding, Is.Empty);
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(result.Content, Is.Not.TypeOf<CompressedContent>());
             Assert.That(result.Content.Headers.ContentType.MediaType, Is.EqualTo("application/json"));
         }
 
@@ -73,6 +76,7 @@ namespace SqueezeMe.UnitTests
             var result = await invoker.SendAsync(request, CancellationToken.None);
 
             Assert.That(result, Is.Not.Null);
+            Assert.That(result.Content, Is.Not.TypeOf<CompressedContent>());
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         }
 

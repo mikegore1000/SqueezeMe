@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SqueezeMe
 {
-    internal class CompressedContent : HttpContent
+    public class CompressedContent : HttpContent
     {
         private readonly HttpContent content;
         private readonly ICompressor compressor;

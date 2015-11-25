@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SqueezeMe
 {
-    internal interface ICompressor
+    public interface ICompressor
     {
         string ContentEncoding { get; }
 
