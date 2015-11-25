@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SqueezeMe
 {
-    public class GZipCompressor : ICompressor
+    internal class GZipCompressor : ICompressor
     {
         public string ContentEncoding
         {
