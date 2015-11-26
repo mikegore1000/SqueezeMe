@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using System;
 
 namespace SqueezeMe.UnitTests
 {
@@ -120,6 +121,29 @@ namespace SqueezeMe.UnitTests
             Assert.That(result.Content, Is.Not.TypeOf<CompressedContent>());
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         }
+
+        [Test]
+        public async void Given_A_Json_Payload_And_A_Single_Accept_Encoding_And_A_Compression_Filter_When_Requesting()
+        {
+            var request = new HttpRequestMessage();
+            request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            request.Content = new ObjectContent<string>("Request", new JsonMediaTypeFormatter());
+
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Content = new ObjectContent<string>("Response", new JsonMediaTypeFormatter());
+
+            Func<HttpResponseMessage, bool> disableCompressionFilter = r => false;
+            var testHandler = new TestHandler(response);
+            var subject = new CompressionHandler(disableCompressionFilter) { InnerHandler = testHandler };
+
+            var invoker = new HttpMessageInvoker(subject, false);
+            var result = await invoker.SendAsync(request, CancellationToken.None);
+
+            Assert.That(result.Content.Headers.ContentEncoding, Is.Empty);
+            Assert.That(result.Content, Is.Not.TypeOf<CompressedContent>());
+        }
+
 
         private class TestHandler : DelegatingHandler
         {

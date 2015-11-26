@@ -15,13 +15,24 @@ namespace SqueezeMe
             new DeflateCompressor()
         };
 
+        private Func<HttpResponseMessage, bool> enableCompression;
+
+        public CompressionHandler() : this(r => true)
+        {
+        }
+
+        public CompressionHandler(Func<HttpResponseMessage, bool> enableCompression)
+        {
+            this.enableCompression = enableCompression;
+        }
+
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
             var baseContent = response.Content;
             var compressor = GetCompressor(request);
 
-            if (baseContent != null && compressor != null)
+            if (baseContent != null && compressor != null && enableCompression(response))
             {
                 response.Content = new CompressedContent(baseContent, compressor);
             }
