@@ -11,6 +11,7 @@
     public class CompressionMiddleware
     {
         private const int BufferSize = 1024 * 4;
+        private const string AcceptEncoding = "Accept-Encoding";
         private Func<IDictionary<string, object>, Task> next;
 
         private readonly List<ICompressor> compressors = new List<ICompressor>()
@@ -29,16 +30,28 @@
             var context = new OwinContext(environment);
             var httpOutputStream = context.Response.Body;
 
+            // TODO: Need to tidy this up!!!
             using (var responseStream = new MemoryStream())
             {
                 context.Response.Body = responseStream;
 
                 await next.Invoke(environment);
+
                 var compressor = GetCompressor(context.Request);
 
-                if (compressor != null && context.Response.Body != null)
+                responseStream.Position = 0;
+                if (context.Response.ContentLength.HasValue)
                 {
-                    await Compress(context, httpOutputStream, responseStream, compressor);
+                    if (compressor != null)
+                    {
+
+                        await Compress(context, httpOutputStream, responseStream, compressor);
+                    }
+                    else
+                    {
+                        context.Response.ContentLength = responseStream.Length;
+                        await responseStream.CopyToAsync(httpOutputStream);
+                    }
                 }
             }
 
@@ -47,9 +60,6 @@
 
         private static async Task Compress(OwinContext context, Stream httpOutputStream, MemoryStream responseStream, ICompressor compressor)
         {
-            responseStream.Position = 0;
-            long contentLength = 0;
-
             using (var compressedStream = new MemoryStream())
             {
                 using (var compressionStream = compressor.CreateStream(compressedStream))
@@ -57,19 +67,23 @@
                     await responseStream.CopyToAsync(compressionStream, BufferSize);
                 }
 
-                contentLength = compressedStream.Length;
+                context.Response.Headers["Content-Encoding"] = compressor.ContentEncoding;
+                context.Response.ContentLength = compressedStream.Length;
+
                 compressedStream.Position = 0;
                 compressedStream.CopyTo(httpOutputStream);
             }
-
-            context.Response.Headers["Content-Encoding"] = compressor.ContentEncoding;
-            context.Response.ContentLength = contentLength;
         }
 
         private ICompressor GetCompressor(IOwinRequest request)
         {
+            if(!request.Headers.ContainsKey(AcceptEncoding))
+            {
+                return null;
+            }
+
             return (from c in compressors
-                    from e in request.Headers.GetCommaSeparatedValues("Accept-Encoding").Select(x => new StringWithQualityHeaderValue(x))
+                    from e in request.Headers.GetCommaSeparatedValues(AcceptEncoding).Select(x => StringWithQualityHeaderValue.Parse(x))
                     orderby e.Quality descending
                     where string.Compare(c.ContentEncoding, e.Value, StringComparison.InvariantCultureIgnoreCase) == 0
                     select c).FirstOrDefault();
