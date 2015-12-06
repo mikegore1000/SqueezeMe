@@ -61,9 +61,6 @@
     <Compile Include="CompressedContent.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CompressionHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="CompressionMiddleware.cs" />
     <Compile Include="DeflateCompressor.cs">
       <SubType>Code</SubType>
