@@ -12,7 +12,7 @@ namespace SqueezeMe
 
         public Stream CreateStream(Stream destination)
         {
-            return new GZipStream(destination, CompressionLevel.Fastest, leaveOpen: false);
+            return new GZipStream(destination, CompressionLevel.Fastest, leaveOpen: true);
         }
     }
 }
