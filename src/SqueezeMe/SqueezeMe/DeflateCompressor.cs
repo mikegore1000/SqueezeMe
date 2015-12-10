@@ -5,10 +5,7 @@ namespace SqueezeMe
 {
     public class DeflateCompressor : ICompressor
     {
-        public string ContentEncoding
-        {
-            get { return "deflate"; }
-        }
+        public string ContentEncoding => "deflate";
 
         public Stream CreateStream(Stream destination)
         {

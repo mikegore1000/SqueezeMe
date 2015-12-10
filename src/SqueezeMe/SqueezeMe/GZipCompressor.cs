@@ -5,10 +5,7 @@ namespace SqueezeMe
 {
     public class GZipCompressor : ICompressor
     {
-        public string ContentEncoding
-        {
-            get { return "gzip"; }
-        }
+        public string ContentEncoding => "gzip";
 
         public Stream CreateStream(Stream destination)
         {

@@ -12,7 +12,7 @@
     {
         private const int BufferSize = 1024 * 4;
         private const string AcceptEncoding = "Accept-Encoding";
-        private Func<IDictionary<string, object>, Task> next;
+        private readonly Func<IDictionary<string, object>, Task> next;
 
         private readonly List<ICompressor> compressors = new List<ICompressor>()
         {
@@ -30,32 +30,36 @@
             var context = new OwinContext(environment);
             var httpOutputStream = context.Response.Body;
 
-            // TODO: Need to tidy this up!!!
-            using (var responseStream = new MemoryStream())
+            try
             {
-                context.Response.Body = responseStream;
-
-                await next.Invoke(environment);
-
-                var compressor = GetCompressor(context.Request);
-
-                responseStream.Position = 0;
-                if (context.Response.ContentLength.HasValue)
+                using (var responseStream = new MemoryStream())
                 {
-                    if (compressor != null)
-                    {
+                    context.Response.Body = responseStream;
 
-                        await Compress(context, httpOutputStream, responseStream, compressor);
-                    }
-                    else
+                    await next.Invoke(environment);
+
+                    var compressor = GetCompressor(context.Request);
+
+                    responseStream.Position = 0;
+                    if (context.Response.ContentLength.HasValue)
                     {
-                        context.Response.ContentLength = responseStream.Length;
-                        await responseStream.CopyToAsync(httpOutputStream);
+                        if (compressor != null)
+                        {
+
+                            await Compress(context, httpOutputStream, responseStream, compressor);
+                        }
+                        else
+                        {
+                            context.Response.ContentLength = responseStream.Length;
+                            await responseStream.CopyToAsync(httpOutputStream);
+                        }
                     }
                 }
             }
-
-            context.Response.Body = httpOutputStream;
+            finally
+            {
+                context.Response.Body = httpOutputStream;
+            }
         }
 
         private static async Task Compress(OwinContext context, Stream httpOutputStream, MemoryStream responseStream, ICompressor compressor)
