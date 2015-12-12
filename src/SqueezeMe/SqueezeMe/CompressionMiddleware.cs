@@ -10,7 +10,6 @@
 
     public class CompressionMiddleware
     {
-        private const int BufferSize = 1024 * 4;
         private const string AcceptEncoding = "Accept-Encoding";
         private readonly Func<IDictionary<string, object>, Task> next;
 
@@ -29,53 +28,37 @@
         {
             var context = new OwinContext(environment);
             var httpOutputStream = context.Response.Body;
+            var compressor = GetCompressor(context.Request);
+
+            if (compressor == null)
+            {
+                await next.Invoke(environment);
+                return;
+            }
 
             try
             {
-                using (var responseStream = new MemoryStream())
+                using (var memoryStream = new MemoryStream())
                 {
-                    context.Response.Body = responseStream;
-
-                    await next.Invoke(environment);
-
-                    var compressor = GetCompressor(context.Request);
-
-                    responseStream.Position = 0;
-                    if (context.Response.ContentLength.HasValue)
+                    using (var compressedStream = compressor.CreateStream(memoryStream))
                     {
-                        if (compressor != null)
-                        {
-
-                            await Compress(context, httpOutputStream, responseStream, compressor);
-                        }
-                        else
-                        {
-                            context.Response.ContentLength = responseStream.Length;
-                            await responseStream.CopyToAsync(httpOutputStream);
-                        }
+                        context.Response.Body = compressedStream;
+                        await next.Invoke(environment);
                     }
+
+                    if (memoryStream.Length > 0)
+                    {
+                        context.Response.Headers["Content-Encoding"] = compressor.ContentEncoding;
+                        context.Response.ContentLength = memoryStream.Length;
+                    }
+
+                    memoryStream.Position = 0;
+                    await memoryStream.CopyToAsync(httpOutputStream);
                 }
             }
             finally
             {
                 context.Response.Body = httpOutputStream;
-            }
-        }
-
-        private static async Task Compress(OwinContext context, Stream httpOutputStream, MemoryStream responseStream, ICompressor compressor)
-        {
-            using (var compressedStream = new MemoryStream())
-            {
-                using (var compressionStream = compressor.CreateStream(compressedStream))
-                {
-                    await responseStream.CopyToAsync(compressionStream, BufferSize);
-                }
-
-                context.Response.Headers["Content-Encoding"] = compressor.ContentEncoding;
-                context.Response.ContentLength = compressedStream.Length;
-
-                compressedStream.Position = 0;
-                compressedStream.CopyTo(httpOutputStream);
             }
         }
 
