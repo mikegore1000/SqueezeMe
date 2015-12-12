@@ -100,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\SqueezeMeTest - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\SqueezeMeTest.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
