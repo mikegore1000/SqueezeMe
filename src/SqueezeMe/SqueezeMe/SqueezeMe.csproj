@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppBuilderExtensions.cs" />
     <Compile Include="CompressedContent.cs">
       <SubType>Code</SubType>
     </Compile>

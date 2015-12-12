@@ -1,13 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Web.Http;
 using Microsoft.Owin;
 using Owin;
-using System.Web.Http;
+using SampleApp;
 using SqueezeMe;
 
-[assembly: OwinStartup(typeof(SampleApp.App_Start.Startup))]
+[assembly: OwinStartup(typeof(Startup))]
 
-namespace SampleApp.App_Start
+namespace SampleApp
 {
     public class Startup
     {
@@ -18,7 +17,7 @@ namespace SampleApp.App_Start
             var config = new HttpConfiguration();
             config.MapHttpAttributeRoutes();
 
-            app.Use(typeof(CompressionMiddleware));
+            app.UseCompression();
             app.UseWebApi(config);
         }
     }
