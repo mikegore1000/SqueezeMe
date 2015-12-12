@@ -59,9 +59,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppBuilderExtensions.cs" />
-    <Compile Include="CompressedContent.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="CompressionMiddleware.cs" />
     <Compile Include="DeflateCompressor.cs">
       <SubType>Code</SubType>
