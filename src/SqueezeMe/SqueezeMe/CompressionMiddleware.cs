@@ -11,6 +11,7 @@
     public class CompressionMiddleware
     {
         private const string AcceptEncoding = "Accept-Encoding";
+        private const int BufferSize = 8192;
         private readonly Func<IDictionary<string, object>, Task> next;
 
         private readonly List<ICompressor> compressors = new List<ICompressor>()
@@ -53,7 +54,7 @@
                     }
 
                     memoryStream.Position = 0;
-                    await memoryStream.CopyToAsync(httpOutputStream);
+                    await memoryStream.CopyToAsync(httpOutputStream, BufferSize);
                 }
             }
             finally
