@@ -49,18 +49,22 @@
 
                     if (memoryStream.Length > 0)
                     {
-                        context.Response.Headers["Content-Encoding"] = compressor.ContentEncoding;
-                        context.Response.ContentLength = memoryStream.Length;
+                        SetResponseHeaders(context, compressor, memoryStream);
+                        memoryStream.Position = 0;
+                        await memoryStream.CopyToAsync(httpOutputStream, BufferSize);
                     }
-
-                    memoryStream.Position = 0;
-                    await memoryStream.CopyToAsync(httpOutputStream, BufferSize);
                 }
             }
             finally
             {
                 context.Response.Body = httpOutputStream;
             }
+        }
+
+        private static void SetResponseHeaders(OwinContext context, ICompressor compressor, MemoryStream memoryStream)
+        {
+            context.Response.Headers["Content-Encoding"] = compressor.ContentEncoding;
+            context.Response.ContentLength = memoryStream.Length;
         }
 
         private ICompressor GetCompressor(IOwinRequest request)
