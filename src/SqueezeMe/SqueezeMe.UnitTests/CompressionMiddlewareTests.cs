@@ -29,7 +29,7 @@ namespace SqueezeMe.UnitTests
             config.MapHttpAttributeRoutes();
 
             var appBuilder = new AppBuilder();
-            appBuilder.Use(typeof(CompressionMiddleware));
+            appBuilder.UseCompression();
             appBuilder.UseWebApi(config);
 
             httpClient = new HttpClient(new OwinHttpMessageHandler(appBuilder.Build()))
