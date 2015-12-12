@@ -2,7 +2,7 @@
 
 SqueezeMe provides an OWIN middleware that enables both GZIP and Deflate response compression.
 
-Sample usage
+## Sample usage
 
 ```C#
 using System.Web.Http;
