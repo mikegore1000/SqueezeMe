@@ -10,6 +10,6 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <copyright>Copyright Mike Gore 2015-2016</copyright>
-    <tags>compression owin gzip deflate</tags>
+    <tags>OWIN compression compress HTTP gzip deflate</tags>
   </metadata>
 </package>
