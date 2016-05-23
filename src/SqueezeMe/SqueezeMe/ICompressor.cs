@@ -7,6 +7,5 @@ namespace SqueezeMe
         string ContentEncoding { get; }
 
         Stream CreateStream(Stream destination);
-        Stream Decompress(Stream source);
     }
 }

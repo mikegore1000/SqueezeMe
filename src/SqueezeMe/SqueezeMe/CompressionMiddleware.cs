@@ -12,7 +12,6 @@
     {
         private const string AcceptEncoding = "Accept-Encoding";
         private const int BufferSize = 8192;
-        private readonly ICollection<string> ExcludeMime;
         private readonly Func<IDictionary<string, object>, Task> next;
 
         private readonly List<ICompressor> compressors = new List<ICompressor>()
@@ -21,11 +20,9 @@
             new DeflateCompressor()
         };
 
-        public CompressionMiddleware(Func<IDictionary<string, object>, Task> next, ICollection<string> excludeMime = null)
+        public CompressionMiddleware(Func<IDictionary<string, object>, Task> next)
         {
             this.next = next;
-
-            if (excludeMime != null) this.ExcludeMime = excludeMime;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
@@ -48,19 +45,6 @@
                     {
                         context.Response.Body = compressedStream;
                         await next.Invoke(environment);
-                    }
-
-                    // If the MIME type ends up being one of the excluded ones, uncompress the stream
-                    // and just return the raw uncompressed data
-                    if (ExcludeMime != null && ExcludeMime.Contains(context.Response.ContentType, StringComparer.InvariantCultureIgnoreCase))
-                    {
-                        memoryStream.Position = 0;
-
-                        using (var rawDataStream = compressor.Decompress(memoryStream))
-                        {
-                            await rawDataStream.CopyToAsync(httpOutputStream, BufferSize);
-                        }
-                        return;
                     }
 
                     if (memoryStream.Length > 0)
