@@ -11,5 +11,10 @@ namespace SqueezeMe
         {
             return new DeflateStream(destination, CompressionLevel.Fastest, leaveOpen: true);
         }
+
+        public Stream Decompress(Stream source)
+        {
+            return new DeflateStream(source, CompressionMode.Decompress);
+        }
     }
 }
