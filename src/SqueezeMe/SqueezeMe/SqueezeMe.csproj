@@ -56,6 +56,9 @@
   <ItemGroup>
     <Compile Include="AppBuilderExtensions.cs" />
     <Compile Include="CompressionMiddleware.cs" />
+    <Compile Include="CompressionStrategies\CompressionStrategy.cs" />
+    <Compile Include="CompressionStrategies\ConfigurableCompressionStrategy.cs" />
+    <Compile Include="CompressionStrategies\DirectCompressionStrategy.cs" />
     <Compile Include="DeflateCompressor.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -69,6 +72,7 @@
     <None Include="packages.config" />
     <None Include="SqueezeMe.nuspec" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

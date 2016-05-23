@@ -73,7 +73,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompressionMiddlewareTests.cs" />
+    <Compile Include="CompressionMiddlewareTestBase.cs" />
+    <Compile Include="RequestBuilder.cs" />
+    <Compile Include="CompressionMiddlewareWithExclusionsTests.cs" />
+    <Compile Include="CompressionMiddlewareWithoutExclusionsTests.cs" />
     <Compile Include="Controllers\FakeController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

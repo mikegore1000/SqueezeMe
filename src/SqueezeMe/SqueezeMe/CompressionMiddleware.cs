@@ -1,18 +1,19 @@
-﻿namespace SqueezeMe
+﻿using SqueezeMe.CompressionStrategies;
+
+namespace SqueezeMe
 {
     using System;
     using System.Linq;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.Owin;
-    using System.IO;
     using System.Net.Http.Headers;
 
     public class CompressionMiddleware
     {
         private const string AcceptEncoding = "Accept-Encoding";
-        private const int BufferSize = 8192;
         private readonly Func<IDictionary<string, object>, Task> next;
+        private readonly CompressionStrategy compressionStrategy;
 
         private readonly List<ICompressor> compressors = new List<ICompressor>()
         {
@@ -20,9 +21,10 @@
             new DeflateCompressor()
         };
 
-        public CompressionMiddleware(Func<IDictionary<string, object>, Task> next)
+        public CompressionMiddleware(Func<IDictionary<string, object>, Task> next, IEnumerable<string> excludedMimeTypes)
         {
             this.next = next;
+            this.compressionStrategy = GetStrategy(excludedMimeTypes);
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
@@ -37,34 +39,18 @@
                 return;
             }
 
-            try
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    using (var compressedStream = compressor.CreateStream(memoryStream))
-                    {
-                        context.Response.Body = compressedStream;
-                        await next.Invoke(environment);
-                    }
-
-                    if (memoryStream.Length > 0)
-                    {
-                        SetResponseHeaders(context, compressor, memoryStream);
-                        memoryStream.Position = 0;
-                        await memoryStream.CopyToAsync(httpOutputStream, BufferSize);
-                    }
-                }
-            }
-            finally
-            {
-                context.Response.Body = httpOutputStream;
-            }
+            await compressionStrategy.Compress(next, context, compressor, httpOutputStream);
+            context.Response.Body = httpOutputStream;
         }
 
-        private static void SetResponseHeaders(OwinContext context, ICompressor compressor, MemoryStream memoryStream)
+        private static CompressionStrategy GetStrategy(IEnumerable<string> excludedMimeTypes)
         {
-            context.Response.Headers["Content-Encoding"] = compressor.ContentEncoding;
-            context.Response.ContentLength = memoryStream.Length;
+            if (excludedMimeTypes == null || !excludedMimeTypes.Any())
+            {
+                return new DirectCompressionStrategy();
+            }
+
+            return new ConfigurableCompressionStrategy(excludedMimeTypes);
         }
 
         private ICompressor GetCompressor(IOwinRequest request)

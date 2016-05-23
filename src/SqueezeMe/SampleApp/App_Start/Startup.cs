@@ -17,7 +17,7 @@ namespace SampleApp
             var config = new HttpConfiguration();
             config.MapHttpAttributeRoutes();
 
-            app.UseCompression();
+            app.UseCompression(excludedMimeTypes: new [] { "application/xml" });
             app.UseWebApi(config);
         }
     }

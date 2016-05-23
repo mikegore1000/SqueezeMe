@@ -21,7 +21,12 @@ namespace SampleApp
             var config = new HttpConfiguration();
             config.MapHttpAttributeRoutes();
 			
-            app.UseCompression(); // Adds the SqueezeMe middleware to the pipeline, no config required
+            // Adds the SqueezeMe middleware to the pipeline, no config required by default.
+            app.UseCompression(); 
+
+            // However, you can supply a list of MIME types to exclude from compression instead.
+            app.UseCompression(excludedMimeTypes: new [] { "application/xml" }); 
+
             app.UseWebApi(config);
         }
     }

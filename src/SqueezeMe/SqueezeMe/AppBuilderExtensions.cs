@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Owin;
 
 namespace SqueezeMe
@@ -6,7 +7,12 @@ namespace SqueezeMe
     {
         public static void UseCompression(this IAppBuilder app)
         {
-            app.Use(typeof(CompressionMiddleware));
+            UseCompression(app, null);
+        }
+
+        public static void UseCompression(this IAppBuilder app, IEnumerable<string> excludedMimeTypes)
+        {
+            app.Use(typeof(CompressionMiddleware), excludedMimeTypes);
         }
     }
 }
