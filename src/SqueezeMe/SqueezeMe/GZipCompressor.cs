@@ -11,5 +11,10 @@ namespace SqueezeMe
         {
             return new GZipStream(destination, CompressionLevel.Fastest, leaveOpen: true);
         }
+
+        public Stream Decompress(Stream source)
+        {
+            return new GZipStream(source, CompressionMode.Decompress);
+        }
     }
 }
