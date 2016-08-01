@@ -5,14 +5,18 @@ namespace SqueezeMe
 {
     public static class AppBuilderExtensions
     {
-        public static void UseCompression(this IAppBuilder app)
+        public static IAppBuilder UseCompression(this IAppBuilder app)
         {
             UseCompression(app, null);
+
+            return app;
         }
 
-        public static void UseCompression(this IAppBuilder app, IEnumerable<string> excludedMimeTypes)
+        public static IAppBuilder UseCompression(this IAppBuilder app, IEnumerable<string> excludedMimeTypes)
         {
             app.Use(typeof(CompressionMiddleware), excludedMimeTypes);
+
+            return app;
         }
     }
 }

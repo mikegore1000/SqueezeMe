@@ -73,6 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppBuilderExtensionsTests.cs" />
     <Compile Include="CompressionMiddlewareTestBase.cs" />
     <Compile Include="RequestBuilder.cs" />
     <Compile Include="CompressionMiddlewareWithExclusionsTests.cs" />
