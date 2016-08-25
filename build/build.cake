@@ -13,7 +13,9 @@ Task("Default")
 
 	NUnit("./../src/SqueezeMe/SqueezeMe.UnitTests/bin/Release/SqueezeMe.UnitTests.dll");
 
-	NuGetPack("./../src/SqueezeMe/SqueezeMe/SqueezeMe.csproj", new NuGetPackSettings());
+	NuGetPack("./../src/SqueezeMe/SqueezeMe/SqueezeMe.csproj", new NuGetPackSettings() {
+		ArgumentCustomization = args => args.Append("-Prop Configuration=Release")
+	});
 });
 
 
