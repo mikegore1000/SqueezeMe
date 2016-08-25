@@ -12,6 +12,8 @@ Task("Default")
 	);
 
 	NUnit("./../src/SqueezeMe/SqueezeMe.UnitTests/bin/Release/SqueezeMe.UnitTests.dll");
+
+	NuGetPack("./../src/SqueezeMe/SqueezeMe/SqueezeMe.csproj", new NuGetPackSettings());
 });
 
 
