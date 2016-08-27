@@ -189,3 +189,4 @@ ModelManifest.xml
 
 # Build scripts
 /build/tools
+*.nupkg

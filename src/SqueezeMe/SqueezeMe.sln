@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2014
-VisualStudioVersion = 14.0.22823.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 14.0.22823.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqueezeMe", "SqueezeMe\SqueezeMe.csproj", "{116FFD45-E6C1-44B9-A4E3-CF6C0DE11513}"
 EndProject
@@ -10,6 +10,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqueezeMe.UnitTests", "SqueezeMe.UnitTests\SqueezeMe.UnitTests.csproj", "{1CBC61AF-4BE6-4CE5-923F-746567433121}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{448DEB93-C979-4F83-897B-CCA1CEB28E15}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{80AE135A-6B8C-4FC7-9910-886D3FDA8638}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\build\build.cake = ..\..\build\build.cake
+		..\..\build\build.ps1 = ..\..\build\build.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
