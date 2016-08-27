@@ -1,8 +1,8 @@
 #tool "nuget:?package=NUnit.Runners&version=2.6.4"
 
-var target = Argument("target", "Default");
+var target = Argument("target", "Build");
 
-Task("Default")
+Task("Build")
 	.Does(() => 
 {
 	NuGetRestore("./../src/SqueezeMe/SqueezeMe.sln");
@@ -15,6 +15,21 @@ Task("Default")
 
 	NuGetPack("./../src/SqueezeMe/SqueezeMe/SqueezeMe.csproj", new NuGetPackSettings() {
 		ArgumentCustomization = args => args.Append("-Prop Configuration=Release")
+	});
+});
+
+Task("Deploy")
+	.IsDependentOn("Build")
+	.Does(() => 
+{
+	var nugetSource = Argument<string>("nugetSource");
+	var nugetApiKey = Argument<string>("nugetApiKey");
+
+	var package = GetFiles("./SqueezeMe*.nupkg");
+
+	NuGetPush(package, new NuGetPushSettings {
+		Source = nugetSource,
+		ApiKey = nugetApiKey
 	});
 });
 
